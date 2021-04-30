@@ -124,7 +124,7 @@ namespace RhythmsGonnaGetYou
             // if keepGoing = true
             while (keepGoing)
             {
-                Console.WriteLine("Main Menu: [A]dd. [V]iew. [S]earch. [Q]uit.");
+                Console.WriteLine("Main Menu: [A]dd. [V]iew. [U]pdate. [S]earch. [Q]uit.");
                 var choice = Console.ReadLine().ToUpper();
 
                 switch (choice)
@@ -136,10 +136,8 @@ namespace RhythmsGonnaGetYou
 
                     case "A":
                         {
-                            Console.WriteLine("What would you like to ADD?: [B]and. [A]lbum. [S]ong");
-                            var answer = Console.ReadLine().ToUpper();
 
-
+                            var answer = PromptForString("Add: [B]and. [A]lbum. [S]ong").ToUpper();
 
                             if (answer == "B")
                             {
@@ -183,30 +181,43 @@ namespace RhythmsGonnaGetYou
                         }
                     case "V":
                         {
-                            // list so far....
-                            Console.WriteLine("");
-                            Console.WriteLine("List of Albums...");
-                            var albumsInfo = context.Albums;
-                            foreach (var album in albumsInfo)
+                            var answer = PromptForString("View all [B]ands or view all [A]lbums").ToUpper();
                             {
-                                Console.WriteLine($"{album.Title}");
-                            }
-                            Console.WriteLine("-------------------------------");
-                            Console.WriteLine("List of Bands...");
-                            var bandsInfo = context.Bands;
-                            foreach (var band in bandsInfo)
-                            {
-                                Console.WriteLine($"{band.Name}");
-                            }
-                            Console.WriteLine("-------------------------------");
-                            Console.WriteLine("List of Songs...");
-                            var songsInfo = context.Songs;
-                            foreach (var song in songsInfo)
-                            {
-                                Console.WriteLine($"{song.Title}");
+                                if (answer == "B")
+                                {
+                                    var bands = context.Bands.Count();
+                                    Console.WriteLine($"There are {bands} in the database!");
+                                }
+                                else if (answer == "A")
+                                {
+                                    var releaseDate = context.Albums.Include(album => album.Band).OrderBy(album => album.ReleaseDate);
+                                    foreach (var album in releaseDate)
+                                    {
+                                        Console.WriteLine($"The album {album.Title} by {album.Band.Name} was released on {album.ReleaseDate}");
+                                    }
+                                }
                             }
                         }
                         break;
+
+                    case "U":
+                        {
+                            var name = PromptForString("What is the name of the band you want to update?");
+
+                            Band foundBand = context.Bands.FirstOrDefault(band => band.Name == name);
+                            if (foundBand == null)
+                            {
+                                Console.WriteLine("There is no band by that name");
+                            }
+                            else
+                            {
+                                var isSignedOrNot = PromptForString($"True or False: Is {name} signed to a label?");
+                                foundBand.IsSigned = isSignedOrNot; // has not tested yet..........
+                            }
+
+                        }
+                        break;
+
                 }
             }
         }

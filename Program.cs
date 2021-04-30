@@ -167,17 +167,31 @@ namespace RhythmsGonnaGetYou
                                 context.Albums.Add(newAlbum);
                                 context.SaveChanges();
                             }
+                            else if (answer == "S")
+                            {
+                                newSong.TrackNumber = PromptForInterger("Track number?");
+                                newSong.Duration = PromptForInterger("Duration of song?");
 
+                                context.Songs.Add(newSong);
+                                context.SaveChanges();
+                            }
 
                             break;
                         }
                     case "V":
                         {
-                            var bandsInfo = context.Albums;
-                            foreach (var album in bandsInfo)
+                            var albumsInfo = context.Albums;
+                            foreach (var album in albumsInfo)
                             {
                                 Console.WriteLine($"{album.Title}");
                             }
+
+                            // var bandsInfo = context.Bands;
+                            // foreach (var band in bandsInfo)
+                            // {
+                            //     Console.WriteLine($"{band.Name}");
+                            // }
+
                         }
                         break;
                 }

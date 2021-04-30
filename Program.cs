@@ -139,13 +139,11 @@ namespace RhythmsGonnaGetYou
                             Console.WriteLine("What would you like to ADD?: [B]and. [A]lbum. [S]ong");
                             var answer = Console.ReadLine().ToUpper();
 
-                            var newBand = new Band();
-                            var newAlbum = new Album();
-                            var newSong = new Song();
 
 
                             if (answer == "B")
                             {
+                                var newBand = new Band();
                                 newBand.Name = PromptForString("Band/Artist name?");
                                 newBand.CountryOfOrigin = PromptForString("What country are the based out of?");
                                 newBand.NumberOfMembers = PromptForInterger("How many members do they have?");
@@ -160,17 +158,22 @@ namespace RhythmsGonnaGetYou
                             }
                             else if (answer == "A")
                             {
+                                var newAlbum = new Album();
                                 newAlbum.Title = PromptForString("What is the Title of the album?");
                                 newAlbum.IsExplicit = PromptForString("Is it explicit?");
                                 newAlbum.ReleaseDate = PromptForString("When was it released?");
+                                newAlbum.BandId = PromptForInterger("What is the band ID?");
 
                                 context.Albums.Add(newAlbum);
                                 context.SaveChanges();
                             }
                             else if (answer == "S")
                             {
+                                var newSong = new Song();
                                 newSong.TrackNumber = PromptForInterger("Track number?");
+                                newSong.Title = PromptForString("What is the title of the Song?");
                                 newSong.Duration = PromptForInterger("Duration of song?");
+                                newSong.AlbumId = PromptForInterger("What is the album ID");
 
                                 context.Songs.Add(newSong);
                                 context.SaveChanges();
@@ -180,18 +183,28 @@ namespace RhythmsGonnaGetYou
                         }
                     case "V":
                         {
+                            // list so far....
+                            Console.WriteLine("");
+                            Console.WriteLine("List of Albums...");
                             var albumsInfo = context.Albums;
                             foreach (var album in albumsInfo)
                             {
                                 Console.WriteLine($"{album.Title}");
                             }
-
-                            // var bandsInfo = context.Bands;
-                            // foreach (var band in bandsInfo)
-                            // {
-                            //     Console.WriteLine($"{band.Name}");
-                            // }
-
+                            Console.WriteLine("-------------------------------");
+                            Console.WriteLine("List of Bands...");
+                            var bandsInfo = context.Bands;
+                            foreach (var band in bandsInfo)
+                            {
+                                Console.WriteLine($"{band.Name}");
+                            }
+                            Console.WriteLine("-------------------------------");
+                            Console.WriteLine("List of Songs...");
+                            var songsInfo = context.Songs;
+                            foreach (var song in songsInfo)
+                            {
+                                Console.WriteLine($"{song.Title}");
+                            }
                         }
                         break;
                 }

@@ -72,18 +72,78 @@ namespace RhythmsGonnaGetYou
     }
     class Program
     {
+        static void DisplayWelcome()
+        {
+            // create greeting to show that the program is running
+            Console.WriteLine("--------------------------------------");
+            Console.WriteLine("--- The Evergrowing Band Database! ---");
+            Console.WriteLine("--------------------------------------");
+            Console.WriteLine("");
+        }
+        // create method to prompt for string response
+        static string PromptForString(string prompt)
+        {
+            // write line
+            Console.WriteLine(prompt);
+            // read line and set it as UserInput
+            var userInput = Console.ReadLine();
+            // return response
+            return userInput;
+        }
+        // create method to prompt for int response
+        static int PromptForInterger(string prompt)
+        {
+            // write line
+            Console.WriteLine(prompt);
+            int userInput;
+            // read line and set it as userInput
+            var goodInput = Int32.TryParse(Console.ReadLine(), out userInput);
+            if (goodInput)
+            {
+                // return response
+                return userInput;
+            }
+            else
+            {
+                // if input not a number then default to 0
+                Console.WriteLine("Invalid number default to 0");
+                return 0;
+            }
+
+        }
         static void Main(string[] args)
         {
             var context = new RhythmsGonnaGetYouContext();
 
-            // create bool statement to determine if user want to contine with app
-            var keepGoing = true;
-            // if keepGoing = true
-            while (keepGoing)
-            {
+            // display greeting
+            DisplayWelcome();
 
+
+            var albumCount = context.Albums.Count();
+            Console.WriteLine($"There are {albumCount} albums!");
+
+            foreach (var album in context.Albums)
+            {
+                Console.WriteLine($"There is an album named {album.Title}");
             }
 
+            var albumsWithBandsAndSongs = context.Albums.
+                                                        Include(album => album.Band).
+                                                        ThenInclude(song => song.Album);
+
+            // const albumsWithBands = context.Albums.Include(album => album.Band);
+            foreach (var album in albumsWithBandsAndSongs)
+            {
+                if (album.Band == null)
+                {
+                    Console.WriteLine($"There is an album named {album.Title} by {album.Band.Name}");
+                }
+                foreach (var song in album.Songs)
+                {
+                    Console.WriteLine($"{song.Title} is played by {song.Band.Name}");
+                }
+            }
         }
     }
 }
+

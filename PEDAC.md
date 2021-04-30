@@ -54,4 +54,28 @@ quit
 
 -- Algorithm --
 
+create greeting to show that the program is running
+
 create Menu:
+[A]dd: add new band
+add album for band
+add song to an album
+
+[V]iew: view all bands
+view all albums (ordered by ReleaseDate)
+view all bands that are signed
+view all bands that are NOT signed
+
+[L]et band go
+[R]esign band
+[S]earch for a band
+[Q]uit
+
+            // create bool statement to determine if user want to contine with app
+            var keepGoing = true;
+            // if keepGoing = true
+            while (keepGoing)
+            {
+                // create menu.........
+                Console.WriteLine("Main menu: [A]dd. ");
+            }

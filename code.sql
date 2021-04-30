@@ -14,14 +14,14 @@ CREATE TABLE "Songs" (
   "Id"			SERIAL PRIMARY KEY,
   "TrackNumber" INT,
   "Title"     	TEXT NOT NULL,
-  "Duration"    TIME
+  "Duration"    INT
 );
 
 CREATE TABLE "Albums" (
   "Id"			SERIAL PRIMARY KEY,
   "Title"		TEXT NOT NULL,
   "IsExplicit"	TEXT,
-  "ReleaseDate" DATE,
+  "ReleaseDate" TEXT,
 );
 
 
@@ -55,10 +55,10 @@ VALUES ('album1', 'False', '09-21-2018', 3);
 
 -- add values to songs and assoc to album with Id
 INSERT INTO "Songs" ("TrackNumber", "Title", "Duration", "AlbumId")
-VALUES (9, 'Breaking the Habit', '3:16', 1);
+VALUES (9, 'Breaking the Habit', 256, 1);
 
 INSERT INTO "Songs" ("TrackNumber", "Title", "Duration", "AlbumId")
-VALUES (7, 'Ill Take You On', '4:15', 2);
+VALUES (7, 'Ill Take You On', 255, 2);
 
 INSERT INTO "Songs" ("TrackNumber", "Title", "Duration", "AlbumId")
-VALUES (1, 'Everything Matters (when it comes to you)', '5:37', 3);
+VALUES (1, 'Everything Matters (when it comes to you)', 337, 3);

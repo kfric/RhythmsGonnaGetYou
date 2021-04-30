@@ -49,7 +49,7 @@ namespace RhythmsGonnaGetYou
         public int Id { get; set; }
         public string Title { get; set; }
         public string IsExplicit { get; set; }
-        public DateTime ReleaseDate { get; set; } // was "date" in SQL...
+        public string ReleaseDate { get; set; } // was "date" in SQL...
         public int BandId { get; set; }
 
         // realted list of Bands
@@ -80,6 +80,7 @@ namespace RhythmsGonnaGetYou
             Console.WriteLine("--------------------------------------");
             Console.WriteLine("");
         }
+
         // create method to prompt for string response
         static string PromptForString(string prompt)
         {
@@ -118,32 +119,69 @@ namespace RhythmsGonnaGetYou
             // display greeting
             DisplayWelcome();
 
-
-            var albumCount = context.Albums.Count();
-            Console.WriteLine($"There are {albumCount} albums!");
-
-            foreach (var album in context.Albums)
+            // create bool statement to determine if user want to contine with app
+            var keepGoing = true;
+            // if keepGoing = true
+            while (keepGoing)
             {
-                Console.WriteLine($"There is an album named {album.Title}");
-            }
+                Console.WriteLine("Main Menu: [A]dd. [V]iew. [S]earch. [Q]uit.");
+                var choice = Console.ReadLine().ToUpper();
 
-            var albumsWithBandsAndSongs = context.Albums.
-                                                        Include(album => album.Band).
-                                                        ThenInclude(song => song.Album);
+                switch (choice)
+                {
+                    case "Q":
+                        Console.WriteLine("Goodbye...");
+                        keepGoing = false;
+                        break;
 
-            // const albumsWithBands = context.Albums.Include(album => album.Band);
-            foreach (var album in albumsWithBandsAndSongs)
-            {
-                if (album.Band == null)
-                {
-                    Console.WriteLine($"There is an album named {album.Title} by {album.Band.Name}");
-                }
-                foreach (var song in album.Songs)
-                {
-                    Console.WriteLine($"{song.Title} is played by {song.Band.Name}");
+                    case "A":
+                        {
+                            Console.WriteLine("What would you like to ADD?: [B]and. [A]lbum. [S]ong");
+                            var answer = Console.ReadLine().ToUpper();
+
+                            var newBand = new Band();
+                            var newAlbum = new Album();
+                            var newSong = new Song();
+
+
+                            if (answer == "B")
+                            {
+                                newBand.Name = PromptForString("Band/Artist name?");
+                                newBand.CountryOfOrigin = PromptForString("What country are the based out of?");
+                                newBand.NumberOfMembers = PromptForInterger("How many members do they have?");
+                                newBand.Website = PromptForString("What is their website URL?");
+                                newBand.Style = PromptForString("What is their genre?");
+                                newBand.IsSigned = PromptForString("Are they signed to a label?");
+                                newBand.ContactName = PromptForString("Who is their point of contact?");
+                                newBand.ContactPhoneNumber = PromptForInterger("What is the contacts phone number?");
+
+                                context.Bands.Add(newBand);
+                                context.SaveChanges();
+                            }
+                            else if (answer == "A")
+                            {
+                                newAlbum.Title = PromptForString("What is the Title of the album?");
+                                newAlbum.IsExplicit = PromptForString("Is it explicit?");
+                                newAlbum.ReleaseDate = PromptForString("When was it released?");
+
+                                context.Albums.Add(newAlbum);
+                                context.SaveChanges();
+                            }
+
+
+                            break;
+                        }
+                    case "V":
+                        {
+                            var bandsInfo = context.Albums;
+                            foreach (var album in bandsInfo)
+                            {
+                                Console.WriteLine($"{album.Title}");
+                            }
+                        }
+                        break;
                 }
             }
         }
     }
 }
-

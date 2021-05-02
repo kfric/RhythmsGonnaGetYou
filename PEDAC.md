@@ -66,16 +66,7 @@ view all albums (ordered by ReleaseDate)
 view all bands that are signed
 view all bands that are NOT signed
 
-[L]et band go
-[R]esign band
+[U]pdate
+IsSigned? (true or false)
 [S]earch for a band
 [Q]uit
-
-            // create bool statement to determine if user want to contine with app
-            var keepGoing = true;
-            // if keepGoing = true
-            while (keepGoing)
-            {
-                // create menu.........
-                Console.WriteLine("Main menu: [A]dd. ");
-            }

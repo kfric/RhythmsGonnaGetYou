@@ -183,10 +183,17 @@ namespace RhythmsGonnaGetYou
                         {
                             var answer = PromptForString("View all [B]ands or view all [A]lbums").ToUpper();
                             {
+                                // to view all bands
                                 if (answer == "B")
                                 {
-                                    var bands = context.Bands.Count();
-                                    Console.WriteLine($"There are {bands} in the database!");
+                                    var bandsCount = context.Bands.Count();
+                                    Console.WriteLine($"There are {bandsCount} in the database!");
+
+                                    var bandList = context.Bands;
+                                    foreach (var band in bandList)
+                                    {
+                                        Console.WriteLine(band.Name);
+                                    }
                                 }
                                 else if (answer == "A")
                                 {
@@ -216,13 +223,15 @@ namespace RhythmsGonnaGetYou
                                 {
                                     Console.WriteLine($"You droped --{name}--");
                                     isSignedOrNot = "False";
-                                    foundBand.IsSigned = isSignedOrNot; // has not tested yet..........
+                                    foundBand.IsSigned = isSignedOrNot;
+                                    context.SaveChanges();
                                 }
                                 else if (isSignedOrNot == "D")
                                 {
                                     Console.WriteLine($"You signed --{name}--");
                                     isSignedOrNot = "True";
                                     foundBand.IsSigned = isSignedOrNot;
+                                    context.SaveChanges();
                                 }
                             }
                         }
@@ -246,10 +255,6 @@ namespace RhythmsGonnaGetYou
                                 {
                                     Console.WriteLine($"{album.Title}");
                                 }
-
-
-
-
 
                                 // var bandAndAlbums = context.Albums.Include(album => album.Band);
                                 // foreach (var album in bandAndAlbums)
@@ -292,13 +297,13 @@ namespace RhythmsGonnaGetYou
 
 
                             // to check if the band IsSigned
-                            // Console.WriteLine("");
-                            // Console.WriteLine("-", 20);
-                            // var bandStatus = context.Bands;
-                            // foreach (var band in bandStatus)
-                            // {
-                            //     Console.WriteLine($"The band/artist {band.Name} is signed: {band.IsSigned}");
-                            // }
+                            Console.WriteLine("");
+                            Console.WriteLine("-", 20);
+                            var bandStatus = context.Bands;
+                            foreach (var band in bandStatus)
+                            {
+                                Console.WriteLine($"The band/artist {band.Name} is signed: {band.IsSigned}");
+                            }
 
                         }
                         break;

@@ -124,7 +124,8 @@ namespace RhythmsGonnaGetYou
             // if keepGoing = true
             while (keepGoing)
             {
-                Console.WriteLine("Main Menu: [A]dd. [V]iew. [U]pdate. [S]earch. [Q]uit.");
+                // create main menu
+                Console.WriteLine("Main Menu: [A]dd. [V]iew. [U]pdate. [S]earch. [Q]uit. [T]est code.");
                 var choice = Console.ReadLine().ToUpper();
 
                 switch (choice)
@@ -136,7 +137,6 @@ namespace RhythmsGonnaGetYou
 
                     case "A":
                         {
-
                             var answer = PromptForString("Add: [B]and. [A]lbum. [S]ong").ToUpper();
 
                             if (answer == "B")
@@ -207,16 +207,102 @@ namespace RhythmsGonnaGetYou
                             Band foundBand = context.Bands.FirstOrDefault(band => band.Name == name);
                             if (foundBand == null)
                             {
+                                Console.WriteLine("There is no band by that name in the database");
+                            }
+                            else
+                            {
+                                var isSignedOrNot = PromptForString($"Do you want to [S]ign or [D]rop {name}").ToUpper();
+                                if (isSignedOrNot == "D")
+                                {
+                                    Console.WriteLine($"You droped --{name}--");
+                                    isSignedOrNot = "False";
+                                    foundBand.IsSigned = isSignedOrNot; // has not tested yet..........
+                                }
+                                else if (isSignedOrNot == "D")
+                                {
+                                    Console.WriteLine($"You signed --{name}--");
+                                    isSignedOrNot = "True";
+                                    foundBand.IsSigned = isSignedOrNot;
+                                }
+                            }
+                        }
+                        break;
+                    case "S":
+                        {
+                            var name = PromptForString("Search database: Enter name of band");
+                            Band foundBand = context.Bands.FirstOrDefault(band => band.Name == name);
+                            if (foundBand == null)
+                            {
                                 Console.WriteLine("There is no band by that name");
                             }
                             else
                             {
-                                var isSignedOrNot = PromptForString($"True or False: Is {name} signed to a label?");
-                                foundBand.IsSigned = isSignedOrNot; // has not tested yet..........
+                                Console.WriteLine($"All albums by {name}");
+
+                                var albums = context.Albums.Include(album => album.Band);
+
+                                var albumList = albums.Where(album => album.Band.Name == name);
+                                foreach (var album in albumList)
+                                {
+                                    Console.WriteLine($"{album.Title}");
+                                }
+
+
+
+
+
+                                // var bandAndAlbums = context.Albums.Include(album => album.Band);
+                                // foreach (var album in bandAndAlbums)
+                                // {
+                                //     Console.WriteLine($"{album.Band.Name}");
+                                // }
                             }
+                        }
+                        break;
+                    case "T":
+                        {
+                            // // to check the list of albums in the database
+                            // Console.WriteLine("");
+                            // Console.WriteLine("-", 20);
+                            // var albumList = context.Albums;
+                            // foreach (var album in albumList)
+                            // {
+                            //     Console.WriteLine($"{album.Title}");
+                            // }
+
+
+                            // // to check the list of bands in the database
+                            // Console.WriteLine("");
+                            // Console.WriteLine("-", 20);
+                            // var bandList = context.Bands;
+                            // foreach (var band in bandList)
+                            // {
+                            //     Console.WriteLine($"{band.Name}");
+                            // }
+
+
+                            // // to check the list of songs in the database
+                            // Console.WriteLine("");
+                            // Console.WriteLine("-", 20);
+                            // var songList = context.Songs;
+                            // foreach (var song in songList)
+                            // {
+                            //     Console.WriteLine($"{song.Title}");
+                            // }
+
+
+                            // to check if the band IsSigned
+                            // Console.WriteLine("");
+                            // Console.WriteLine("-", 20);
+                            // var bandStatus = context.Bands;
+                            // foreach (var band in bandStatus)
+                            // {
+                            //     Console.WriteLine($"The band/artist {band.Name} is signed: {band.IsSigned}");
+                            // }
 
                         }
                         break;
+
 
                 }
             }

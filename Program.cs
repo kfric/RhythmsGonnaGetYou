@@ -75,9 +75,9 @@ namespace RhythmsGonnaGetYou
         static void DisplayWelcome()
         {
             // create greeting to show that the program is running
-            Console.WriteLine("--------------------------------------");
-            Console.WriteLine("--- The Evergrowing Band Database! ---");
-            Console.WriteLine("--------------------------------------");
+            Console.WriteLine("---------------------------------------------------");
+            Console.WriteLine("--- The Evergrowing database for Bands/Artists! ---");
+            Console.WriteLine("---------------------------------------------------");
             Console.WriteLine("");
         }
 
@@ -125,7 +125,9 @@ namespace RhythmsGonnaGetYou
             while (keepGoing)
             {
                 // create main menu
+                Console.WriteLine(new String('-', 66));
                 Console.WriteLine("Main Menu: [A]dd. [V]iew. [U]pdate. [S]earch. [Q]uit. [T]est code.");
+                Console.WriteLine(new String('-', 66));
                 var choice = Console.ReadLine().ToUpper();
 
                 switch (choice)
@@ -137,19 +139,20 @@ namespace RhythmsGonnaGetYou
 
                     case "A":
                         {
+                            Console.WriteLine(new String('-', 28));
                             var answer = PromptForString("Add: [B]and. [A]lbum. [S]ong").ToUpper();
 
                             if (answer == "B")
                             {
                                 var newBand = new Band();
                                 newBand.Name = PromptForString("Band/Artist name?");
-                                newBand.CountryOfOrigin = PromptForString("What country are the based out of?");
-                                newBand.NumberOfMembers = PromptForInterger("How many members do they have?");
-                                newBand.Website = PromptForString("What is their website URL?");
-                                newBand.Style = PromptForString("What is their genre?");
-                                newBand.IsSigned = PromptForString("Are they signed to a label?");
-                                newBand.ContactName = PromptForString("Who is their point of contact?");
-                                newBand.ContactPhoneNumber = PromptForInterger("What is the contacts phone number?");
+                                newBand.CountryOfOrigin = PromptForString("What country of origin?");
+                                newBand.NumberOfMembers = PromptForInterger("Number of members?");
+                                newBand.Website = PromptForString("Website URL?");
+                                newBand.Style = PromptForString("Genre?");
+                                newBand.IsSigned = PromptForString("[True] or [False]: Are they signed to a label?");
+                                newBand.ContactName = PromptForString("Point of contact name?");
+                                newBand.ContactPhoneNumber = PromptForInterger("Point of contact phone number?");
 
                                 context.Bands.Add(newBand);
                                 context.SaveChanges();
@@ -157,9 +160,9 @@ namespace RhythmsGonnaGetYou
                             else if (answer == "A")
                             {
                                 var newAlbum = new Album();
-                                newAlbum.Title = PromptForString("What is the Title of the album?");
+                                newAlbum.Title = PromptForString("Album title?");
                                 newAlbum.IsExplicit = PromptForString("Is it explicit?");
-                                newAlbum.ReleaseDate = PromptForString("When was it released?");
+                                newAlbum.ReleaseDate = PromptForString("Released date? (MM-DD-YYYY)");
                                 newAlbum.BandId = PromptForInterger("What is the band ID?");
 
                                 context.Albums.Add(newAlbum);
@@ -169,8 +172,8 @@ namespace RhythmsGonnaGetYou
                             {
                                 var newSong = new Song();
                                 newSong.TrackNumber = PromptForInterger("Track number?");
-                                newSong.Title = PromptForString("What is the title of the Song?");
-                                newSong.Duration = PromptForInterger("Duration of song?");
+                                newSong.Title = PromptForString("Song title??");
+                                newSong.Duration = PromptForInterger("Duration of song?(seconds)");
                                 newSong.AlbumId = PromptForInterger("What is the album ID");
 
                                 context.Songs.Add(newSong);
@@ -181,13 +184,15 @@ namespace RhythmsGonnaGetYou
                         }
                     case "V":
                         {
+                            Console.WriteLine(new String('-', 37));
                             var answer = PromptForString("View all [B]ands or view all [A]lbums").ToUpper();
                             {
                                 // to view all bands
                                 if (answer == "B")
                                 {
                                     var bandsCount = context.Bands.Count();
-                                    Console.WriteLine($"There are {bandsCount} in the database!");
+                                    Console.WriteLine($"Number of Bands in database: {bandsCount}");
+                                    Console.WriteLine(new String('-', 28));
 
                                     var bandList = context.Bands;
                                     foreach (var band in bandList)
@@ -197,6 +202,9 @@ namespace RhythmsGonnaGetYou
                                 }
                                 else if (answer == "A")
                                 {
+                                    var albumsCount = context.Albums.Count();
+                                    Console.WriteLine($"Number of Albums in database: {albumsCount}");
+
                                     var releaseDate = context.Albums.Include(album => album.Band).OrderBy(album => album.ReleaseDate);
                                     foreach (var album in releaseDate)
                                     {
@@ -242,7 +250,7 @@ namespace RhythmsGonnaGetYou
                             Band foundBand = context.Bands.FirstOrDefault(band => band.Name == name);
                             if (foundBand == null)
                             {
-                                Console.WriteLine("There is no band by that name");
+                                Console.WriteLine("There is no band/artist by that name");
                             }
                             else
                             {
@@ -255,60 +263,9 @@ namespace RhythmsGonnaGetYou
                                 {
                                     Console.WriteLine($"{album.Title}");
                                 }
-
-                                // var bandAndAlbums = context.Albums.Include(album => album.Band);
-                                // foreach (var album in bandAndAlbums)
-                                // {
-                                //     Console.WriteLine($"{album.Band.Name}");
-                                // }
                             }
                         }
                         break;
-                    case "T":
-                        {
-                            // // to check the list of albums in the database
-                            // Console.WriteLine("");
-                            // Console.WriteLine("-", 20);
-                            // var albumList = context.Albums;
-                            // foreach (var album in albumList)
-                            // {
-                            //     Console.WriteLine($"{album.Title}");
-                            // }
-
-
-                            // // to check the list of bands in the database
-                            // Console.WriteLine("");
-                            // Console.WriteLine("-", 20);
-                            // var bandList = context.Bands;
-                            // foreach (var band in bandList)
-                            // {
-                            //     Console.WriteLine($"{band.Name}");
-                            // }
-
-
-                            // // to check the list of songs in the database
-                            // Console.WriteLine("");
-                            // Console.WriteLine("-", 20);
-                            // var songList = context.Songs;
-                            // foreach (var song in songList)
-                            // {
-                            //     Console.WriteLine($"{song.Title}");
-                            // }
-
-
-                            // to check if the band IsSigned
-                            Console.WriteLine("");
-                            Console.WriteLine("-", 20);
-                            var bandStatus = context.Bands;
-                            foreach (var band in bandStatus)
-                            {
-                                Console.WriteLine($"The band/artist {band.Name} is signed: {band.IsSigned}");
-                            }
-
-                        }
-                        break;
-
-
                 }
             }
         }

@@ -80,7 +80,6 @@ namespace RhythmsGonnaGetYou
             Console.WriteLine("---------------------------------------------------");
             Console.WriteLine("");
         }
-
         // create method to prompt for string response
         static string PromptForString(string prompt)
         {
@@ -110,7 +109,6 @@ namespace RhythmsGonnaGetYou
                 Console.WriteLine("Invalid number default to 0");
                 return 0;
             }
-
         }
         static void Main(string[] args)
         {
@@ -185,9 +183,20 @@ namespace RhythmsGonnaGetYou
                                 newAlbum.IsExplicit = PromptForString("[True] or [False]: Is it explicit?");
                                 // release date?
                                 newAlbum.ReleaseDate = PromptForString("Released date? (MM-DD-YYYY)");
-                                // what is the band ID? from table
-                                newAlbum.BandId = PromptForInterger("What is the band ID?");
-                                // add and save album
+                                // prompt for band name and have the app assign the correct BandId
+                                var bandName = PromptForString("What is the name of the band/artist?");
+                                // foundBand = band.Name that is = bandId (user input)
+                                var foundBand = context.Bands.FirstOrDefault(band => band.Name == bandName);
+                                // if no band by that name found then null. writeline no band by that name
+                                if (foundBand == null)
+                                {
+                                    Console.WriteLine("There is no band/artist by that name in the database");
+                                }
+                                // else if there is a band by that name we need to attach the band's Id to the album
+                                else
+                                {
+                                    newAlbum.BandId = foundBand.Id;
+                                }
                                 context.Albums.Add(newAlbum);
                                 context.SaveChanges();
                             }
@@ -200,16 +209,30 @@ namespace RhythmsGonnaGetYou
                                 // track number?
                                 newSong.TrackNumber = PromptForInterger("Track number?");
                                 // title of song?
-                                newSong.Title = PromptForString("Song title??");
+                                newSong.Title = PromptForString("Song title?");
                                 // duration of song?
                                 newSong.Duration = PromptForInterger("Duration of song?(seconds)");
-                                // album ID? from table
-                                newSong.AlbumId = PromptForInterger("What is the album ID");
+
+                                // might be working but should add a view songs option to display all songs AND band***********
+
+                                // prompt for album title and have the app assign the correct AlbumId
+                                var albumTitle = PromptForString("What is the title of the album?");
+                                // foundAlbum = album.Title that is = albumId (user input)
+                                var foundAlbum = context.Albums.FirstOrDefault(album => album.Title == albumTitle);
+                                // if no album by that title found then null. writeline no album by that title
+                                if (foundAlbum == null)
+                                {
+                                    Console.WriteLine("There is no album by that title in the database");
+                                }
+                                // else if there is a album by that title we need to attach the album's Id to the song
+                                else
+                                {
+                                    newSong.AlbumId = foundAlbum.Id;
+                                }
                                 // add and save song
                                 context.Songs.Add(newSong);
                                 context.SaveChanges();
                             }
-
                             break;
                         }
                     // if choice == V
@@ -217,7 +240,7 @@ namespace RhythmsGonnaGetYou
                         {
                             Console.WriteLine(new String('-', 37));
                             // View menu: view all [B]ands or view all [A]lbums
-                            var answer = PromptForString("View all [B]ands or view all [A]lbums").ToUpper();
+                            var answer = PromptForString("View all:[B]ands. [A]lbums. [S]ongs.").ToUpper();
                             {
                                 // if answer == B
                                 if (answer == "B")
@@ -246,13 +269,27 @@ namespace RhythmsGonnaGetYou
                                     Console.WriteLine($"Number of Albums in database: {albumsCount}");
 
                                     // display the albums.TItle order.by release date
-                                    // releaseDate = context.Albums.Include(album => album.Band).OrderBy(album => album.ReleaseDate)
+                                    // releaseDate = albums and include the band associated with it
+                                    // order by the album's release date
                                     var releaseDate = context.Albums.Include(album => album.Band).OrderBy(album => album.ReleaseDate);
                                     // foreach album in releaseDate
                                     foreach (var album in releaseDate)
                                     {
                                         // writeline album.Title by album.Band.Name was release on album.ReleaseDate
                                         Console.WriteLine($"The album {album.Title} by {album.Band.Name} was released on {album.ReleaseDate}");
+                                    }
+                                }
+                                else if (answer == "S")
+                                {
+                                    // get the count of all songs in list
+                                    var songsCount = context.Songs.Count();
+                                    Console.WriteLine($"Number of Songs in database: {songsCount}");
+                                    // include the album Id and the Band Id so that we can display the band name with the song
+                                    // order by song title
+                                    var songList = context.Songs.Include(song => song.Album).ThenInclude(album => album.Band).OrderBy(song => song.Title);
+                                    foreach (var song in songList)
+                                    {
+                                        Console.WriteLine($"{song.Title} by {song.Album.Band.Name}");
                                     }
                                 }
                             }
@@ -265,7 +302,7 @@ namespace RhythmsGonnaGetYou
                             var name = PromptForString("What is the name of the band you want to update?");
 
                             // // if the {name} == to the name of a band in the database
-                            Band foundBand = context.Bands.FirstOrDefault(band => band.Name == name);
+                            var foundBand = context.Bands.FirstOrDefault(band => band.Name == name);
                             // if no band by that name then null
                             if (foundBand == null)
                             {
@@ -280,7 +317,7 @@ namespace RhythmsGonnaGetYou
                                 if (isSignedOrNot == "D")
                                 {
                                     // writeline you dropped {name}
-                                    Console.WriteLine($"You droped --{name}--");
+                                    Console.WriteLine($"You dropped --{name}--");
                                     // change answer to false
                                     isSignedOrNot = "False";
                                     // make answer = band IsSigned
@@ -309,7 +346,7 @@ namespace RhythmsGonnaGetYou
                             // name = promptforstring enter name of band
                             var name = PromptForString("Search database: Enter name of band");
                             // if the {name} == to the name of a band in the database
-                            Band foundBand = context.Bands.FirstOrDefault(band => band.Name == name);
+                            var foundBand = context.Bands.FirstOrDefault(band => band.Name == name);
                             // if no band by that name then null
                             if (foundBand == null)
                             {
